@@ -1,20 +1,26 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const {eventData} = require('../config/DbConfig');
 
 const handleLogin = async (req, res) => {
     console.log('tokens : '+process.env.ACCESS_TOKEN_SECRET);
     const { user, pwd } = req.body;
     if (!user || !pwd) return res.status(400).json({ 'message': 'Username and password are required.' });
 
-    const foundUser = {"username":"dhelila","roles":{"User":2001},
+   /* const foundUser = {"username":"dhelila","roles":{"User":2001},
     "password":"$2b$10$GULu1lvZxb6Hz0Eapt34Cu.B1c940Rj8Ya9mZjLy0c.iUB2EWEmL2",
     "refreshToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImRhdmUxIiwiaWF0IjoxNjMzOTkyMjkwLCJleHAiOjE2MzQwNzg2OTB9.U85HVX_gcDZkHHSRWeo7AHfIe7q9i03dGW2ed3fHqAk"}
+    */
+   const use = {"roles":{"User":2001}};
+    const foundUser = await eventData(user);
+    console.log('user '+foundUser);
     if (!foundUser) return res.sendStatus(401); //Unauthorized 
     // evaluate password 
     const match = await bcrypt.compare(pwd, foundUser.password);
     console.log('match : '+match);
     if (match) {
-        const roles = Object.values(foundUser.roles).filter(Boolean);
+        const roles = Object.values(use.roles).filter(Boolean);
+        console.log(roles);
         // create JWTs
         const accessToken = jwt.sign(
             {
