@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const useragent = require('useragent');
-const {eventData,storeToken} = require('../config/DbConfig');
+const {loginUser,storeToken} = require('../config/DbConfig');
 
 const handleLogin = async (req, res) => {
     const agent = useragent.parse(req.headers['user-agent']);
@@ -12,11 +12,8 @@ const handleLogin = async (req, res) => {
 
     try{
 
-        const foundUser = await eventData(user);
-        if (!foundUser) return res.sendStatus(401); //Unauthorized 
-        // evaluate password 
-        console.log(foundUser.password);
-        console.log('pwd '+pwd);
+        const foundUser = await loginUser(user);
+        if (!foundUser) return res.sendStatus(401);
         const match = await bcrypt.compare(pwd, foundUser.password);
         console.log('match : '+match);
         if (match) {
@@ -24,24 +21,26 @@ const handleLogin = async (req, res) => {
             const accessToken = jwt.sign(
                 {
                     "UserInfo": {
-                        "username": foundUser.username
+                        "username": foundUser.username,
+                        "id":foundUser.id
                     }
                 },
                 process.env.ACCESS_TOKEN_SECRET,
-                { expiresIn: '100s' }
+                { algorithm: 'HS256',
+                  expiresIn: 86400 }
             );
             const refreshToken = jwt.sign(
-                { "username": foundUser.username },
+                { "username": foundUser.username,
+                   "id":foundUser.id },
                 process.env.REFRESH_TOKEN_SECRET,
-                { expiresIn: '1d' }
-            );
-            // Saving refreshToken with current user
+                {  algorithm: 'HS256',
+                   expiresIn: '1w' });
+
             foundUser.refreshToken = refreshToken;
             foundUser.browser = browser;
             const result = await storeToken(foundUser);
-            console.log(result);
             if(result.success){
-                res.cookie('humming', refreshToken, { httpOnly: true, secure: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 }); 
+                res.cookie('humming', refreshToken, { httpOnly: true, secure: true, sameSite: 'None', maxAge: 7 * 24 * 60 * 60 * 1000 });
                 res.json({ accessToken });
             }else{
                 res.sendStatus(500);

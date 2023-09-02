@@ -3,11 +3,10 @@ import useAuth from "../hooks/useAuth";
 
 
 const RequireAuth = () => {
-    console.log('here 2');
+
     const { auth } = useAuth();
     const location = useLocation();
-
-
+    console.log('in client auth '+JSON.stringify(auth));
     return (
         auth?.user && auth?.accessToken
             ? <Outlet />

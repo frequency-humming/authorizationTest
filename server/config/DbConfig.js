@@ -9,7 +9,7 @@ const pool = new Pool ({
     port:5432
 });
 
-const eventData = async (req) => {
+const loginUser = async (req) => {
     let data = new Array();
     const username = req;
     console.log('here '+username);
@@ -22,7 +22,7 @@ const eventData = async (req) => {
         for (let row of result.rows) {
             console.log(row);
             data.push({
-                Id: row.id,
+                id: row.id,
                 username: row.username,
                 password: row.password,
                 refreshtoken: row.refreshtoken
@@ -43,12 +43,11 @@ const eventData = async (req) => {
 }
 
 const refreshUserToken = async (req) => {
-    let data = new Array();
+    
     let client;
-
     try {
         client = await pool.connect();
-        const result = await client.query('SELECT u.username FROM "refresh_tokens" r LEFT JOIN "user" u ON r.user_id = u.id WHERE r.token = $1', [req]);
+        const result = await client.query('SELECT u.username, u.id FROM "user" u INNER JOIN "refresh_tokens" r ON u.id = r.user_id WHERE r.token = $1',[req]);
         
         if (result.rows.length === 0) {
             console.log("No matching rows found");
@@ -56,8 +55,7 @@ const refreshUserToken = async (req) => {
         }
 
         const row = result.rows[0];
-        console.log(row);
-        return { username: row.username};
+        return { username: row.username,id: row.id};
 
     } catch (err) {
         console.error('Database error:', err);
@@ -74,7 +72,7 @@ const refreshUserToken = async (req) => {
 const storeToken = async (user) => {
 
     const refreshToken = user.refreshToken;
-    const userId = user.Id;
+    const userId = user.id;
     const browser = user.browser;
     let client;
     try {
@@ -82,8 +80,10 @@ const storeToken = async (user) => {
         const existingTokenRes = await client.query('SELECT * FROM refresh_tokens WHERE user_id = $1', [userId]);
 
         if (existingTokenRes.rows.length > 0) {
+            console.log('in update');
             result = await client.query('UPDATE refresh_tokens SET token = $1, browser = $2 WHERE user_id = $3', [refreshToken,browser,userId]);
         } else {
+            console.log('in insert');
             result = await client.query('INSERT INTO refresh_tokens (user_id, token,browser) VALUES ($1, $2, $3)', [userId,refreshToken,browser]);
         }
         if (result.rowCount > 0) {
@@ -134,6 +134,7 @@ const createUser = async (user,pwd,email) => {
     let client;
     try {
         client = await pool.connect();
+        console.log('1 '+user,pwd,email);
         const existingUser = await client.query('INSERT INTO "user" (username,password,email) VALUES ($1, $2, $3)', [user,pwd,email]);
         if(existingUser.rowCount > 0){
             return true;
@@ -152,4 +153,4 @@ const createUser = async (user,pwd,email) => {
 }
 
 
-module.exports = {eventData,storeToken,duplicateUsers,createUser,refreshUserToken};
+module.exports = {loginUser,storeToken,duplicateUsers,createUser,refreshUserToken};
