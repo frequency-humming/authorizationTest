@@ -31,11 +31,6 @@ const Home = () => {
             <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
             <h1>Home</h1>
             <br />
-            <br />
-            <Link to="/editor">Go to the Editor page</Link>
-            <br />
-            <Link to="/admin">Go to the Admin page</Link>
-            <br />
             <Link to="/linkpage">Go to the link page</Link>
             <div className="flexGrow">
                 <button onClick={logout}>Sign Out</button>
