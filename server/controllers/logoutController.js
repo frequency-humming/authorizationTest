@@ -1,21 +1,32 @@
+const {loginUser,deleteToken} = require('./databaseController');
+const {errorlogger} = require('../middleware/errorHandler');
+const useragent = require('useragent');
 
 const handleLogout = async (req, res) => {
+    const agent = useragent.parse(req.headers['user-agent']);
+    const browser = agent.family;
+    const system = agent.os.family;
+    const user = req.body.user;
     const cookies = req.cookies;
     if (!cookies?.humming) return res.sendStatus(204); //No content
-    const refreshToken = cookies.humming;
 
-    const foundUser = {"username":"dhelila","roles":{"User":2001},
-    "password":"$2b$10$GULu1lvZxb6Hz0Eapt34Cu.B1c940Rj8Ya9mZjLy0c.iUB2EWEmL2",
-    "refreshToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImRhdmUxIiwiaWF0IjoxNjMzOTkyMjkwLCJleHAiOjE2MzQwNzg2OTB9.U85HVX_gcDZkHHSRWeo7AHfIe7q9i03dGW2ed3fHqAk"}
-    if (!foundUser) {
-        console.log('not found in logout');
-        res.clearCookie('humming', { httpOnly: true, sameSite: 'None', secure: true });
-        return res.sendStatus(204);
-    }
-
-    foundUser.refreshToken = '';
-    res.clearCookie('humming', { httpOnly: true, sameSite: 'None', secure: true });
-    res.sendStatus(204);
+    try{
+        const foundUser = await loginUser(user);
+        if (!foundUser) {
+            console.log('not found in logout');
+            res.clearCookie('humming', { httpOnly: true, sameSite: 'Strict', secure: true });
+            return res.sendStatus(204);
+        }
+        foundUser.browser = browser;
+        foundUser.system = system;
+        await deleteToken(foundUser);
+        res.clearCookie('humming', { httpOnly: true, sameSite: 'Strict', secure: true });
+        res.sendStatus(204);
+    } catch(error){
+        errorlogger(error);
+        res.sendStatus(500);
+    } 
+    
 }
 
 module.exports = { handleLogout }

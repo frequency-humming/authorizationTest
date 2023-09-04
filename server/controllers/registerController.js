@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
-const {duplicateUsers,createUser} = require('../config/DbConfig');
+const {duplicateUsers,createUser} = require('./databaseController');
+const {errorlogger} = require('../middleware/errorHandler');
 
 const handleNewUser = async (req, res) => {
     
@@ -7,7 +8,6 @@ const handleNewUser = async (req, res) => {
     if (!user || !pwd) return res.status(400).json({ 'message': 'Username and password are required.' });
 
     try {
-
         const duplicate = await duplicateUsers(user,email);
         if (duplicate.found){
             return res.status(409).json({ 'Error': `${duplicate.basedOn}` });
@@ -17,10 +17,12 @@ const handleNewUser = async (req, res) => {
         if(registeredUser){
             console.log('new user created');
             res.status(201).json({ 'success': `New user ${user} created!` });
+        }else {
+            res.status(500).json({ 'failure': 'Refresh and try again'});
         }
-    } catch (err) {
-        console.log('getting eror in register controller');
-        res.status(500).json({ 'message': err.message });
+    } catch (error) {
+        errorlogger(error);
+        res.status(500);
     }
 }
 

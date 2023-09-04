@@ -1,8 +1,9 @@
 const jwt = require('jsonwebtoken');
-const {refreshUserToken} = require('../config/DbConfig');
+const {refreshUserToken} = require('./databaseController');
+const {errorlogger} = require('../middleware/errorHandler');
 
 const handleRefreshToken = async (req, res) => {
-    console.log('34545');
+    
     const cookies = req.cookies;
     if (!cookies?.humming) return res.sendStatus(401);
     const refreshToken = cookies.humming;
@@ -16,7 +17,6 @@ const handleRefreshToken = async (req, res) => {
             (err, decoded) => {
                 if (err || (foundUser.username !== decoded.username && foundUser.id !== decoded.id)) return res.sendStatus(403);
                 const user = foundUser.username;
-                const id = foundUser.id;
                 const accessToken = jwt.sign(
                     {
                         "UserInfo": {
@@ -28,11 +28,11 @@ const handleRefreshToken = async (req, res) => {
                     { algorithm: 'HS256',
                     expiresIn: 86400 }
                 );
-                res.json({ accessToken });
+                res.json({ user,accessToken });
             }
         );
-    }catch(err){
-        console.log('refresh token : '+err);
+    }catch(error){
+        errorlogger(error);
         return res.sendStatus(403);
     }
     

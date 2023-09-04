@@ -64,7 +64,7 @@ const Register = () => {
             return;
         }
         try {
-            const response = await axios.post(REGISTER_URL,
+            await axios.post(REGISTER_URL,
                 JSON.stringify({ user, pwd, email }),
                 {
                     headers: { 'Content-Type': 'application/json' },
@@ -72,7 +72,6 @@ const Register = () => {
                 }
             );
             setSuccess(true);
-            //clear state and controlled inputs
             setUser('');
             setPwd('');
             setMatchPwd('');

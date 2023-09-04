@@ -5,14 +5,14 @@ import {axiosPrivate} from "../api/axios";
 
 
 const Home = () => {
-    const { setAuth } = useContext(AuthContext);
+    const { auth,setAuth } = useContext(AuthContext);
     const [errMsg, setErrMsg] = useState('');
     const errRef = useRef();
-
+    console.log(auth.user);
     const logout = async (e) => {
         e.preventDefault();
         try {
-            await await axiosPrivate.get('/logout');
+            await axiosPrivate.post('/logout',{ user: auth.user });
             setAuth({});
         }catch (err) {
             if (!err?.response) {

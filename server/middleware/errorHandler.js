@@ -6,4 +6,10 @@ const errorHandler = (err, req, res, next) => {
     res.status(500).send(err.message);
 }
 
-module.exports = errorHandler;
+const errorlogger = (err,next) => {
+    logEvents(`${err.name}: ${err.message}`, 'errLog.txt');
+    console.error(err.stack)
+    return(err);
+}
+
+module.exports = {errorHandler,errorlogger};

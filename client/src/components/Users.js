@@ -1,15 +1,17 @@
 import { useState, useEffect } from "react";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { useNavigate, useLocation } from "react-router-dom";
+import useAuth from '../hooks/useAuth';
 
 const Users = () => {
     const [users, setUsers] = useState();
     const axiosPrivate = useAxiosPrivate();
     const navigate = useNavigate();
     const location = useLocation();
-
+    const {auth} = useAuth();
 
     useEffect(() => {
+        console.log('in user '+auth);
         let isMounted = true;
         const controller = new AbortController();
 
@@ -30,7 +32,7 @@ const Users = () => {
             isMounted = false;
             controller.abort();
         }
-    }, [axiosPrivate,navigate,location])
+    }, [axiosPrivate,navigate,location,auth])
 
     return (
         <article>

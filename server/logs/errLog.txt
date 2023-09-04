@@ -1,0 +1,6 @@
+2023-09-04	14:45:13	9094edba-3de9-4a7f-82a1-7cd22e8691c2	Error: Error Retrieving Resources
+2023-09-04	14:46:01	76fd1986-5641-42dc-9c44-cd2ffc639a94	Error: Error Retrieving Resources
+2023-09-04	15:07:50	478dd2ca-7e6f-4685-901b-a439ab9c1a24	Error: Error creating user
+2023-09-04	15:08:20	7bd50486-52bd-4b26-878c-7f9bf4e8f106	Error: Error creating user
+2023-09-04	15:15:24	e661d7d1-9a67-4af3-afc2-382c17a0765b	Error: Error storing token
+2023-09-04	15:41:54	a57e882b-ef82-49ad-96fa-00d9e17769c1	SyntaxError: Unexpected token " in JSON at position 0
