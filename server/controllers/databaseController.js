@@ -28,12 +28,15 @@ const loginUser = async (username) => {
     }
 }
 
-const refreshUserToken = async (token) => {
-    
+const verifyUserToken = async (uToken,uBrowser,uSystem) => {
+
+    const browser = uBrowser.toLowerCase().split(' ')[0];
+    const system = uSystem.toLowerCase().split(' ')[0];
+    console.log(browser+' '+system);
     let client;
     try {
         client = await pool.connect();
-        const result = await client.query('SELECT u.username, u.id FROM "user" u INNER JOIN "refresh_tokens" r ON u.id = r.user_id WHERE r.token = $1',[token]);
+        const result = await client.query('SELECT u.username, u.id FROM "user" u INNER JOIN "refresh_tokens" r ON u.id = r.user_id WHERE r.token = $1 AND r.browser = $2 AND r.system = $3',[uToken,browser,system]);
         
         if (result.rows.length === 0) {
             console.log("No matching rows found");
@@ -66,7 +69,9 @@ const storeToken = async (user) => {
 
         if (existingTokenRes.rows.length > 0) {
             console.log('in update');
-            result = await client.query('UPDATE refresh_tokens SET token = $1 WHERE user_id = $2', [refreshToken,userId]);
+            console.log(existingTokenRes.rows[0].id);
+            const tokenId = existingTokenRes.rows[0].id;
+            result = await client.query('UPDATE refresh_tokens SET token = $1 WHERE id = $2', [refreshToken,tokenId]);
         } else {
             console.log('in insert');
             result = await client.query('INSERT INTO refresh_tokens (user_id, token,browser,system) VALUES ($1, $2, $3, $4)', [userId,refreshToken,browser,system]);
@@ -154,4 +159,4 @@ const deleteToken = async (user) => {
     }
 }
 
-module.exports = {loginUser,storeToken,duplicateUsers,createUser,refreshUserToken,deleteToken};
+module.exports = {loginUser,storeToken,duplicateUsers,createUser,verifyUserToken,deleteToken};

@@ -1,15 +1,17 @@
 const jwt = require('jsonwebtoken');
-const {refreshUserToken} = require('./databaseController');
+const {verifyUserToken} = require('./databaseController');
 const {errorlogger} = require('../middleware/errorHandler');
 
 const handleRefreshToken = async (req, res) => {
-    
+    const agent = useragent.parse(req.headers['user-agent']);
+    const browser = agent.family;
+    const system = agent.os.family;
     const cookies = req.cookies;
     if (!cookies?.humming) return res.sendStatus(401);
     const refreshToken = cookies.humming;
 
     try{
-        const foundUser = await refreshUserToken(refreshToken);
+        const foundUser = await verifyUserToken(refreshToken,browser,system);
         if (!foundUser) return res.sendStatus(403); //Forbidden 
         jwt.verify(
             refreshToken,

@@ -4,3 +4,12 @@
 2023-09-04	15:08:20	7bd50486-52bd-4b26-878c-7f9bf4e8f106	Error: Error creating user
 2023-09-04	15:15:24	e661d7d1-9a67-4af3-afc2-382c17a0765b	Error: Error storing token
 2023-09-04	15:41:54	a57e882b-ef82-49ad-96fa-00d9e17769c1	SyntaxError: Unexpected token " in JSON at position 0
+2023-09-06	22:36:03	55e3bedf-d2de-488e-84e2-ffbd26a997c1	Error: Error Retrieving Resources
+2023-09-06	22:36:03	14dfc92b-d14f-46e9-b7c8-cc7b46f42319	Error: Error Retrieving Resources
+2023-09-06	22:36:03	b670b00a-0fab-4969-964e-d0211cac94df	Error: Error Retrieving Resources
+2023-09-06	22:36:03	d856d7bb-b6e3-404b-96e3-0eab583cf0da	Error: Error Retrieving Resources
+2023-09-06	22:36:03	df8a7fd7-ebc4-4070-86d3-c137fdf1a6d7	Error: Error Retrieving Resources
+2023-09-09	17:38:13	a398521c-ff1a-4354-abd8-f9ca14f091a3	Error: Error Retrieving Resources
+2023-09-09	17:44:49	f1cd4afb-e687-4437-8013-d7d61c545aa0	Error: Error Retrieving Resources
+2023-09-09	17:45:20	13bf1f70-6ff7-408b-9362-9fde2456f526	ReferenceError: verifiedDecoded is not defined
+2023-09-09	18:16:46	f45d0ea6-9d52-4e7d-9fa4-b86c5e5338d9	Error: Error storing token

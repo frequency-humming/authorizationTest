@@ -14,13 +14,13 @@ const handleLogout = async (req, res) => {
         const foundUser = await loginUser(user);
         if (!foundUser) {
             console.log('not found in logout');
-            res.clearCookie('humming', { httpOnly: true, sameSite: 'Strict', secure: true });
+            res.clearCookie('humming', { httpOnly: true, sameSite: 'strict', secure: true });
             return res.sendStatus(204);
         }
         foundUser.browser = browser;
         foundUser.system = system;
         await deleteToken(foundUser);
-        res.clearCookie('humming', { httpOnly: true, sameSite: 'Strict', secure: true });
+        res.clearCookie('humming', { httpOnly: true, sameSite: 'strict', secure: true });
         res.sendStatus(204);
     } catch(error){
         errorlogger(error);
