@@ -80,7 +80,7 @@ const verifyUser = async(req,res) => {
                 if (err || (foundUser.username !== decoded.username && foundUser.id !== decoded.id)) return res.sendStatus(403);
                 const currentTimestamp = Math.floor(Date.now() / 1000); // in seconds
                 const timeUntilExpiration = decoded.exp - currentTimestamp;
-                if (timeUntilExpiration < 86400) {
+                if (timeUntilExpiration < 259200) {
                     console.log('in refresh cookie');
                     newRefreshToken = jwt.sign({
                         "username": foundUser.username,

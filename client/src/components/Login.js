@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import useAuth from '../hooks/useAuth';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { BeatLoader } from 'react-spinners';
 
 import axios from '../api/axios';
 const LOGIN_URL = '/auth';
@@ -8,7 +9,7 @@ const VERIFY_URL = '/verify';
 
 const Login = () => {
     const { auth,setAuth } = useAuth();
-
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
     const from = location.state?.from?.pathname || "/";
@@ -21,15 +22,11 @@ const Login = () => {
     const [errMsg, setErrMsg] = useState('');
 
     useEffect(() => {
-        userRef.current.focus();
-    }, [])
-
-    useEffect(() => {
-        setErrMsg('');
-    }, [user, pwd])
-
-    useEffect(() => {
+        if (navigator.connection) {
+            console.log(navigator.connection.effectiveType);
+          }
         console.log('in verify method'+JSON.stringify(auth));
+        setIsLoading(true);
         let controller = new AbortController();
         let isMounted = true;
         const verify = async () => {
@@ -56,6 +53,8 @@ const Login = () => {
                     console.log('in verify catch is mounted method'+JSON.stringify(auth));
                     setAuth({});
                 }
+            } finally{
+                setIsLoading(false);
             }
         }
         verify();
@@ -64,6 +63,14 @@ const Login = () => {
             controller.abort();
         }
     },[]);
+
+    useEffect(() => {
+        userRef.current.focus();
+    }, [])
+
+    useEffect(() => {
+        setErrMsg('');
+    }, [user, pwd])
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -96,6 +103,14 @@ const Login = () => {
     }
 
     return (
+            isLoading ?
+            (
+                <div>
+                    <BeatLoader />
+                </div>
+            )
+            :
+            (
             <section>
                 <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
                 <h1>Sign In</h1>
@@ -130,6 +145,7 @@ const Login = () => {
                 </p>
             </section>
             )
+    )
 }
 
 export default Login

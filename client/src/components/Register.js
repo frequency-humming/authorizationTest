@@ -1,18 +1,22 @@
 import { useRef, useState, useEffect } from "react";
 import { faCheck, faTimes, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useNavigate } from 'react-router-dom';
 import axios from '../api/axios';
 import { Link } from "react-router-dom";
+import useAuth from '../hooks/useAuth';
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const EMAIL_REGEX = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 const REGISTER_URL = '/register';
 
+
 const Register = () => {
     const userRef = useRef();
     const errRef = useRef();
-
+    const { auth } = useAuth();
+    const navigate = useNavigate();
     const [user, setUser] = useState('');
     const [validName, setValidName] = useState(false);
     const [userFocus, setUserFocus] = useState(false);
@@ -31,6 +35,13 @@ const Register = () => {
 
     const [errMsg, setErrMsg] = useState('');
     const [success, setSuccess] = useState(false);
+    console.log('in register');
+
+    useEffect(()=>{
+        if (auth?.user && auth?.accessToken) {
+            navigate('/');
+        }
+    },[])
 
     useEffect(() => {
         userRef.current.focus();
