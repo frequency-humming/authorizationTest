@@ -4,7 +4,7 @@ import Home from './components/Home';
 import Layout from './components/Layout';
 import Missing from './components/Missing';
 import Unauthorized from './components/Unauthorized';
-import LinkPage from './components/LinkPage';
+import LinkPages from './components/LinkPages';
 import RequireAuth from './components/RequireAuth';
 import { Routes, Route } from 'react-router-dom';
 import Users from './components/Users';
@@ -22,7 +22,7 @@ function App() {
             <Route element={<RequireAuth />}>
               <Route path="/" element={<Home />} />
               <Route path="users" element={<Users />} />
-              <Route path="linkpage" element={<LinkPage />} />
+              <Route path="linkpages" element={<LinkPages />} />
             </Route>
             {/* catch all */}
             <Route path="*" element={<Missing />} />
