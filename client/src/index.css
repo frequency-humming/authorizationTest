@@ -29,13 +29,21 @@ body {
     align-items: center;
 
 }
-
 .side{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     padding-left: 10%;
-    justify-items: center;
     background-color: #324863;
     grid-area: side;
     height: 100vh;
+}
+.side h4:hover {
+    color: #fecbce; 
+    cursor: pointer;  
+}
+.side h4 {
+    transition: all 0.3s ease;
 }
 .content{
     display: grid;
@@ -50,6 +58,9 @@ body {
 }
 .users, .charts{
     margin-bottom: 15%;
+}
+.logout {
+    margin-bottom: 4%;
 }
 
 .formPage {

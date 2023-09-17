@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { useContext,useState,useRef } from "react";
 import AuthContext from "../context/AuthProvider";
 import {axiosPrivate} from "../api/axios";
@@ -7,10 +6,8 @@ import Users from './Users';
 
 
 const Home = () => {
-    const [showLinksPage, setShowLinksPage] = useState(false);
     const { auth,setAuth } = useContext(AuthContext);
     const [errMsg, setErrMsg] = useState('');
-    const linkPageContent = LinkPages();
     const [contentComponent, setContentComponent] = useState(null);
     const errRef = useRef();
     console.log(auth.user);
@@ -39,25 +36,19 @@ const Home = () => {
 
     return (
         <div className="main-grid">
+            <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
             <div className="side">
-                <h4 className="linkpages" onClick={links}>Link Page</h4>
-                <h4 className="users" onClick={showUsers}>Data Page</h4>
-                <h4 className="charts" onClick={links}>Charts</h4>
+                <div className="side-top">
+                    <h4 className="linkpages" onClick={links}>Link Page</h4>
+                    <h4 className="users" onClick={showUsers}>Data Page</h4>
+                    <h4 className="charts" onClick={links}>Charts</h4>
+                </div>
+                <h4 className="logout" onClick={logout}>Logout</h4>
             </div>
             <div className="content">
                 {contentComponent}
             </div>
         </div>
-        /*<section className='formPage'>
-            <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
-            <h1>Home</h1>
-            <br />
-            <Link to="/linkpage">Go to the link page</Link>
-            <Link to="/users">Go to the Data page</Link>
-            <div className="flexGrow">
-                <button onClick={logout}>Sign Out</button>
-            </div>
-        </section>*/
     )
 }
 

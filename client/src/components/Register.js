@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import { faCheck, faTimes, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useLocation } from 'react-router-dom';
 import axios from '../api/axios';
 import { Link } from "react-router-dom";
 import useAuth from '../hooks/useAuth';
@@ -34,7 +34,8 @@ const Register = () => {
     const [matchFocus, setMatchFocus] = useState(false);
 
     const [errMsg, setErrMsg] = useState('');
-    const [success, setSuccess] = useState(false);
+    const location = useLocation();
+    const from = location.state?.from?.pathname || "/";
     console.log('in register');
 
     useEffect(()=>{
@@ -82,15 +83,19 @@ const Register = () => {
                     withCredentials: true
                 }
             );
-            setSuccess(true);
             setUser('');
             setPwd('');
             setMatchPwd('');
+            navigate(from, { replace: true });
         } catch (err) {
             if (!err?.response) {
                 setErrMsg('No Server Response');
             } else if (err.response?.status === 409) {
-                setErrMsg('Username Taken');
+                if(err.response.data.Error === 'Email'){
+                    setErrMsg('Email alreay in use');
+                }else{
+                    setErrMsg('Username Taken');
+                }             
             } else {
                 setErrMsg('Registration Failed')
             }
@@ -99,15 +104,6 @@ const Register = () => {
     }
 
     return (
-        <>
-            {success ? (
-                <section>
-                    <h1>Success!</h1>
-                    <p>
-                        <Link to="/">Sign In</Link>
-                    </p>
-                </section>
-            ) : (
                 <div className='formPage'>
                     <section>
                         <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
@@ -182,8 +178,6 @@ const Register = () => {
                                 Must include uppercase and lowercase letters, a number and a special character.<br />
                                 Allowed special characters: <span aria-label="exclamation mark">!</span> <span aria-label="at symbol">@</span> <span aria-label="hashtag">#</span> <span aria-label="dollar sign">$</span> <span aria-label="percent">%</span>
                             </p>
-
-
                             <label htmlFor="confirm_pwd">
                                 Confirm Password:
                                 <FontAwesomeIcon icon={faCheck} className={validMatch && matchPwd ? "valid" : "hide"} />
@@ -216,9 +210,7 @@ const Register = () => {
                         </p>
                     </section>
                 </div>
-            )}
-        </>
-    )
+            )
 }
 
 export default Register
