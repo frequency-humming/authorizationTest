@@ -38,7 +38,7 @@ const Chart = () => {
                 wsRef.current.close();
             }
         };
-    }, []); // Empty dependency array means this useEffect runs once when component mounts
+    }, []);
 
     return (
         <div>
