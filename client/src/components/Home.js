@@ -3,7 +3,7 @@ import AuthContext from "../context/AuthProvider";
 import {axiosPrivate} from "../api/axios";
 import LinkPages from "./LinkPages";
 import Users from './Users';
-
+import Chart from './Chart';
 
 const Home = () => {
     const { auth,setAuth } = useContext(AuthContext);
@@ -33,6 +33,9 @@ const Home = () => {
     const showUsers = () => {
         setContentComponent(<Users />);
     }
+    const showChart = () => {
+        setContentComponent(<Chart />);
+    }
 
     return (
         <div className="main-grid">
@@ -41,7 +44,7 @@ const Home = () => {
                 <div className="side-top">
                     <h4 className="linkpages" onClick={links}>Link Page</h4>
                     <h4 className="users" onClick={showUsers}>Data Page</h4>
-                    <h4 className="charts" onClick={links}>Charts</h4>
+                    <h4 className="charts" onClick={showChart}>Charts</h4>
                 </div>
                 <h4 className="logout" onClick={logout}>Logout</h4>
             </div>
